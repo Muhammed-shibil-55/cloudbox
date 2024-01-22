@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 
 class Category(models.Model):
@@ -14,7 +15,7 @@ class Product(models.Model):
     title=models.CharField(max_length=200)
     price=models.PositiveIntegerField()
     description=models.CharField(max_length=200)
-    picture=models.ImageField(upload_to="images",default="default.jpg")
+    picture=models.ImageField(upload_to="images",default="default.jpeg")
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
     is_active=models.BooleanField(default=True)
@@ -39,3 +40,8 @@ class BasketItem(models.Model):
     is_active=models.BooleanField(default=True)
 
 
+def  create_basket(sender,instance,created,**kwargs):
+    if created:
+        Basket.objects.create(owner=instance)
+
+post_save.connect(create_basket,sender=User)
