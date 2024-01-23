@@ -30,6 +30,16 @@ class Basket(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
     is_active=models.BooleanField(default=True)
+
+    @property
+    def cart_items(self):
+        return self.cartitem.all()
+    
+    @property
+    def cart_items_quantity(self):
+        qs=self.cart_items
+        return qs.count
+    
     
 class BasketItem(models.Model):
     basket=models.ForeignKey(Basket,on_delete=models.CASCADE,related_name="cartitem")

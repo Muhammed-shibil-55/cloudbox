@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from django.contrib.auth.models import User
 
-from store.models import Product,BasketItem
+from store.models import Product,BasketItem,Basket
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,7 +21,17 @@ class ProductSerializer(serializers.ModelSerializer):
         
 
 class BasketItemSerializer(serializers.ModelSerializer):
+    product=ProductSerializer(read_only=True)
     class Meta:
         model=BasketItem
         fields="__all__"
         read_only_fields=["id","basket","product","created_at","updated_at","is_active"]
+
+
+class BasketSerializer(serializers.ModelSerializer):
+    cart_items=BasketItemSerializer(read_only=True,many=True)
+    cart_items_quantity=serializers.CharField(read_only=True)
+    
+    class Meta:
+        model=Basket
+        fields=["id","owner","created_at","updated_at","is_active","cart_items","cart_items_quantity"]
